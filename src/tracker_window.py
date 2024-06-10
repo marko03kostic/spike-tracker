@@ -4,7 +4,7 @@ class TrackerWindow(QWidget):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.edit = QLineEdit("Write my name here")
+        self.edit = QLineEdit("Market tracking window")
         self.button = QPushButton("Show Greetings")
 
         layout = QVBoxLayout()
