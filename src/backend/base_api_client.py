@@ -2,10 +2,12 @@ from abc import ABC, abstractmethod
 import requests
 from typing import Any, Dict, Optional, Set, List
 
+from src.main_application import MainApplication
+
 class BaseAPIClient(ABC):
 
-    def __init__(self, main_app_instance) -> None:
-        self._main_app_instance = main_app_instance
+    def __init__(self) -> None:
+        self.main_app: MainApplication = MainApplication.instance()
         self.BASE_URL = None
         self.timeout = None
 

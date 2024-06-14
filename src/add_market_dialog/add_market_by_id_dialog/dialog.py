@@ -7,7 +7,7 @@ from src.error_message import show_error_message
 class AddMarketDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.main_app = MainApplication.instance()
+        self.main_app: MainApplication = MainApplication.instance()
         self.setWindowTitle("Add Market by Id")
         self.setMinimumSize(300, 200)
         self.init_ui()

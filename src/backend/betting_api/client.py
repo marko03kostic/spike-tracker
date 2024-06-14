@@ -1,7 +1,6 @@
 import requests
 from typing import Set, List, Dict, Any, Optional
 
-from src.main_application import MainApplication
 from src.backend.base_api_client import BaseAPIClient
 from src.backend.betting_api.enums import (MarketProjection, MatchProjection,
                                        OrderProjection,TimeGranularity,
@@ -30,7 +29,7 @@ from src.backend.betting_api.definitions import (MarketFilter, CompetitionResult
 class BettingAPIClient(BaseAPIClient):
 
     def __init__(self) -> None:
-        self.main_app = MainApplication.instance()
+        super().__init__()
         self.BASE_URL = "https://api.betfair.com/exchange/betting/rest/v1.0"
         self.timeout = 30
 

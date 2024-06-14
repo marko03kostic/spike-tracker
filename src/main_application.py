@@ -1,4 +1,10 @@
 from PySide6.QtWidgets import QApplication
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.backend.betting_api.client import BaseAPIClient 
+
+
 
 class MainApplication(QApplication):
     _instance = None
@@ -8,7 +14,7 @@ class MainApplication(QApplication):
             raise RuntimeError("MainApplication is a singleton class and has already been initialized.")
         super().__init__(argv)
         MainApplication._instance = self
-        self._betting_api_client = None
+        self._betting_api_client: BaseAPIClient = None
         self._ssoid = None
         self._app_key = None
 
