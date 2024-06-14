@@ -41,9 +41,9 @@ class MainApplication(QApplication):
         self._app_key = value
 
     @property
-    def betting_api_client(self) -> Optional[BettingAPIClient]:
+    def betting_api_client(self) -> Optional['BettingAPIClient']:
         return self._betting_api_client
 
     @betting_api_client.setter
-    def betting_api_client(self, value: Optional[BettingAPIClient]) -> None:
+    def betting_api_client(self, value: Optional['BettingAPIClient']) -> None:
         self._betting_api_client = value
