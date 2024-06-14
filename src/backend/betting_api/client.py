@@ -1,13 +1,14 @@
 import requests
 from typing import Set, List, Dict, Any, Optional
 
+from src.main_application import MainApplication
 from src.backend.base_api_client import BaseAPIClient
 from src.backend.betting_api.enums import (MarketProjection, MatchProjection,
                                        OrderProjection,TimeGranularity,
                                        Side, OrderBy, SortDir, MarketSort,
                                        GroupBy, BetStatus, MarketBettingType, OrderStatus,
                                        PriceData, RollupModel, OrderType, PersistenceType,
-                                       TimeInForce, BetTargetType, Endpoint)
+                                       TimeInForce, BetTargetType, Endpoint, ErrorCode)
 from src.backend.betting_api.definitions import (MarketFilter, CompetitionResult,
                                              TimeRangeResult, EventResult,
                                              MarketTypeResult, CountryCodeResult,
@@ -28,23 +29,25 @@ from src.backend.betting_api.definitions import (MarketFilter, CompetitionResult
 
 class BettingAPIClient(BaseAPIClient):
 
-    def __init__(self, main_app_instance) -> None:
-        self._main_app_instance = main_app_instance
+    def __init__(self) -> None:
+        self.main_app = MainApplication.instance()
         self.BASE_URL = "https://api.betfair.com/exchange/betting/rest/v1.0"
         self.timeout = 30
 
     @property
     def headers(self):
         return {
-            'X-Application': self._main_app_instance.app_key,
-            'X-Authentication': self._main_app_instance.SSOID,
+            'X-Application': self.main_app.app_key,
+            'X-Authentication': self.main_app.ssoid,
             'Content-type': 'application/json',
             'Accept-encoding': 'gzip, deflate',
             'Connection': 'keep-alive',
         }
 
     def _handle_api_specific_errors(self, response: requests.Response):
-        pass
+        error_code = response.json().get('detail', {}).get('APINGException', {}).get('errorCode', None)
+        if error_code:
+            print(ErrorCode[error_code])
 
     def list_event_types(self,
                         text_query: Optional[str] = None,

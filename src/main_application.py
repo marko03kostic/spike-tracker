@@ -1,16 +1,15 @@
 from PySide6.QtWidgets import QApplication
 
-from src.backend.betting_api.api_client import BettingAPIClient
-
 class MainApplication(QApplication):
     _instance = None
 
     def __init__(self, argv):
+        if MainApplication._instance:
+            raise RuntimeError("MainApplication is a singleton class and has already been initialized.")
         super().__init__(argv)
-        if not MainApplication._instance:
-            MainApplication._instance = self
-        self._betting_api_client = BettingAPIClient(self)
-        self._SSOID = None
+        MainApplication._instance = self
+        self._betting_api_client = None
+        self._ssoid = None
         self._app_key = None
 
     @staticmethod
@@ -18,14 +17,14 @@ class MainApplication(QApplication):
         if not MainApplication._instance:
             raise RuntimeError("MainApplication instance not initialized yet")
         return MainApplication._instance
-
+    
     @property
-    def SSOID(self):
-        return self._SSOID
+    def ssoid(self):
+        return self._ssoid
 
-    @SSOID.setter
-    def SSOID(self, value):
-        self._SSOID = value
+    @ssoid.setter
+    def ssoid(self, value):
+        self._ssoid = value
 
     @property
     def app_key(self):
@@ -38,3 +37,7 @@ class MainApplication(QApplication):
     @property
     def betting_api_client(self):
         return self._betting_api_client
+    
+    @betting_api_client.setter
+    def betting_api_client(self, value):
+        self._betting_api_client = value
