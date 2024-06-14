@@ -34,7 +34,7 @@ class BettingAPIClient(BaseAPIClient):
         self.timeout = 30
 
     @property
-    def headers(self):
+    def headers(self) -> dict:
         return {
             'X-Application': self.main_app.app_key,
             'X-Authentication': self.main_app.ssoid,
@@ -43,7 +43,7 @@ class BettingAPIClient(BaseAPIClient):
             'Connection': 'keep-alive',
         }
 
-    def _handle_api_specific_errors(self, response: requests.Response):
+    def _handle_api_specific_errors(self, response: requests.Response)  -> None:
         error_code = response.json().get('detail', {}).get('APINGException', {}).get('errorCode', None)
         if error_code:
             print(ErrorCode[error_code])
