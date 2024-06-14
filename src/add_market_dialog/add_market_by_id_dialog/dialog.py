@@ -1,6 +1,5 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QPushButton, QHBoxLayout
-
-from src.backend.requests.betting_api_requests import get_list_event_types_request
+import re
 
 from src.error_message import show_error_message
 
@@ -30,12 +29,24 @@ class AddMarketDialog(QDialog):
         button_layout.addWidget(self.cancel_button)
 
     def add_clicked(self):
-        get_list_event_types_request()
-        if self.is_market_id_valid():
+        if self.is_input_valid():
             self.accept()
-        else:
-            show_error_message("Invalid MarketId")
 
-    def is_market_id_valid(self):
-        input_text = self.input_field.text()
-        return len(input_text) > 0 
+    def is_market_id_valid(self, market_id):
+        '''if check_market_id(market_id):
+            return True
+        show_error_message("MarketId not found")'''
+        return False
+        
+    def is_input_correct_format(self, input):
+        pattern = r'^\d\.\d+$'
+        if re.match(pattern, input):
+            return True
+        show_error_message("Invalid format")
+        return False
+        
+    def is_input_valid(self):
+        input = self.input_field.text()
+        if self.is_input_correct_format(input):
+            return self.is_market_id_valid(input)
+        return False
