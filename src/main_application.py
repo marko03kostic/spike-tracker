@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from src.backend.betting_api.client import BettingAPIClient
 
-
-
 class MainApplication(QApplication):
     _instance = None
 

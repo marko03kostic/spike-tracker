@@ -7,13 +7,14 @@ class MainWindow(QMainWindow):
 
     def __init__(self) -> None:
         super().__init__()
+        self.init_gui()
+
+    def init_gui(self) -> None:
         self.setWindowTitle("SpikeTracker")
         self.setMinimumSize(400, 300)
         self.setMaximumSize(1200, 900)
         self.resize(800, 600)
-        self.init_gui()
-
-    def init_gui(self) -> None:
+        
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
@@ -42,4 +43,6 @@ class MainWindow(QMainWindow):
     def remove_market_slot(self) -> None:
         current_index = self.tab_widget.currentIndex()
         if current_index != -1:
+            widget = self.tab_widget.widget(current_index)
             self.tab_widget.removeTab(current_index)
+            widget.deleteLater()
