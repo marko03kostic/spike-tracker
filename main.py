@@ -14,7 +14,7 @@ if __name__=='__main__':
     app.ssoid = '+zumf1NVPeHCI+fK3inuFvMj0ukkx/HtkKQT5ahZt0I='
     app.app_key = 'UyNmNpCtpFF8RELo'
 
-    print(app._graphs_api_client.load_runner_chart('1.226741615', 15294, 0))
+    print(app.betting_api_client.list_competitions())
 
     main_window = MainWindow()
     main_window.show()
