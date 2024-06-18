@@ -10,22 +10,42 @@ from src.backend.exchange_stream.enums import (BettingType,
                                                Field,
                                                OP)
 from src.backend.exchange_stream.definitions import (BetfairRequestMessage,
+                                                     BetfairResponseMessage,
                                                      BetfairMarketSubscriptionMessage,
                                                      BetfairMarketFilter,
                                                      BetfairMarketDataFilter,
                                                      BetfairAuthenticationMessage)
-
+from src.backend.exchange_stream.cache.connection_cache import ConnectionCache
+from src.backend.exchange_stream.cache.market_cache import MarketCache
+from src.backend.exchange_stream.cache.status_cache import StatusCache
 
 class ExchangeStream(Thread):
-    
+
     def __init__(self) -> None:
         super().__init__(daemon=True)
+        self.init_cache()
         self.main_app: MainApplication = MainApplication.instance()
         self._stop_event = Event()
         self._running = True
         self.HOST = 'stream-api.betfair.com'
         self.PORT = 443
         self.sock = None
+
+    def init_cache(self):
+        self.connection_cache: ConnectionCache = ConnectionCache()
+        self.market_cache: MarketCache = MarketCache()
+        self.status_cache: StatusCache = StatusCache()
+
+        self.handlers = {
+            OP.connection.value: self.connection_cache.update,
+            OP.mcm.value: self.market_cache.update,
+            OP.status.value: self.status_cache.update
+        }
+
+    def on_data(self, data: BetfairResponseMessage) -> None:
+        data = json.loads(data)
+        op = data.get('op')
+        self.handlers[op](data)
 
     def connect(self) -> None:
         context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
@@ -44,7 +64,7 @@ class ExchangeStream(Thread):
                 while "\r\n" in recv_buffer:
                     message, recv_buffer = recv_buffer.split("\r\n", 1)
                     if message:
-                        print(message)
+                        self.on_data(message)
 
         except socket.error as e:
             print(f"Socket error: {e}")
@@ -54,7 +74,6 @@ class ExchangeStream(Thread):
     def close(self) -> None:
         if self.sock:
             self.sock.close()
-            print('Connection closed')
 
     def send(self, data: BetfairRequestMessage) -> None:
         if not self._stop_event.is_set():

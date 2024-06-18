@@ -9,23 +9,21 @@ class TrackerWindow(QWidget):
     def __init__(self, market_catalogue: MarketCatalogue, parent=None) -> None:
         super().__init__(parent)
         self._market_catalogue: MarketCatalogue = market_catalogue
+        self.init_gui()
         self._exchange_stream: ExchangeStream = ExchangeStream()
         self._exchange_stream.start()
         self._exchange_stream.send_authentication_message()
         self._exchange_stream.send_market_subscription_message(market_ids=[self._market_catalogue.get('marketId')])
-        self.init_gui()
 
     def init_gui(self):
         self.edit = QLineEdit("Market tracking window")
-        self.button = QPushButton("Show Greetings")
         self.info_widget = InfoWidget(self._market_catalogue)
 
         layout = QVBoxLayout()
         layout.addWidget(self.info_widget)
         layout.addWidget(self.edit)
-        layout.addWidget(self.button)
 
         self.setLayout(layout)
-    
+
     def __del__(self):
         self._exchange_stream.stop()
