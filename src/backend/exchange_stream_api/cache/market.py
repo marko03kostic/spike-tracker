@@ -1,7 +1,7 @@
 from typing import List, Union
 from dataclasses import dataclass, field
 
-from src.backend.exchange_stream.definitions import BetfairRunnerChange
+from src.backend.exchange_stream_api.definitions import BetfairRunnerChange
 
 @dataclass
 class Market:

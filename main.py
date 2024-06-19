@@ -9,12 +9,10 @@ from src.backend.graphs_api.client import GraphsAPIClient
 if __name__=='__main__':
     app = MainApplication(sys.argv)
     app.betting_api_client = BettingAPIClient()
-    app._graphs_api_client = GraphsAPIClient()
+    app.graphs_api_client = GraphsAPIClient()
     
-    app.ssoid = '+zumf1NVPeHCI+fK3inuFvMj0ukkx/HtkKQT5ahZt0I='
+    app.ssoid = 'EqJKQvwYcbOuVFyQW/M7uJOX3hdxg99ExZZN5c++0Vg='
     app.app_key = 'UyNmNpCtpFF8RELo'
-
-    print(app.betting_api_client.list_competitions())
 
     main_window = MainWindow()
     main_window.show()

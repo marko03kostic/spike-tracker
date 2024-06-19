@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from src.backend.betting_api.client import BettingAPIClient
-    from src.backend.graphs_api.client import GraphsAPIClient
 
 class MainApplication(QApplication):
     _instance = None
@@ -14,7 +13,6 @@ class MainApplication(QApplication):
         super().__init__(argv)
         MainApplication._instance = self
         self._betting_api_client: Optional[BettingAPIClient] = None
-        self._graphs_api_client: Optional[GraphsAPIClient] = None
         self._ssoid: Optional[str] = None
         self._app_key: Optional[str] = None
 

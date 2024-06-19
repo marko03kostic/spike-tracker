@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QDialog, QMainWindow, QToolBar, QTabWidget, QVBoxLayout, QWidget
 from PySide6.QtCore import Slot
-from src.tracker_window import TrackerWindow
+from src.market_tab import MarketTab
 from src.add_market_dialog.add_market_by_id_dialog.dialog import AddMarketDialog
 
 class MainWindow(QMainWindow):
@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
             market_name = dialog.market_catalogue.get('marketName', None)
             tab_title = f'{event_name} \n {market_name}'
 
-            self.tab_widget.addTab(TrackerWindow(dialog.market_catalogue), tab_title)
+            self.tab_widget.addTab(MarketTab(dialog.market_catalogue), tab_title)
 
     @Slot()
     def remove_market_slot(self) -> None:

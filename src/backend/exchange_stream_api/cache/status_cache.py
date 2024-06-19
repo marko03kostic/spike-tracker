@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from src.backend.exchange_stream.definitions import BetfairStatusMessage
-from src.backend.exchange_stream.enums import StatusCode, ErrorCode
+from src.backend.exchange_stream_api.definitions import BetfairStatusMessage
+from src.backend.exchange_stream_api.enums import StatusCode, ErrorCode
 
 @dataclass
 class StatusCache:

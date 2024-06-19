@@ -6,18 +6,18 @@ import json
 import time
 
 from src.main_application import MainApplication
-from src.backend.exchange_stream.enums import (BettingType,
+from src.backend.exchange_stream_api.enums import (BettingType,
                                                Field,
                                                OP)
-from src.backend.exchange_stream.definitions import (BetfairRequestMessage,
+from src.backend.exchange_stream_api.definitions import (BetfairRequestMessage,
                                                      BetfairResponseMessage,
                                                      BetfairMarketSubscriptionMessage,
                                                      BetfairMarketFilter,
                                                      BetfairMarketDataFilter,
                                                      BetfairAuthenticationMessage)
-from src.backend.exchange_stream.cache.connection_cache import ConnectionCache
-from src.backend.exchange_stream.cache.market_cache import MarketCache
-from src.backend.exchange_stream.cache.status_cache import StatusCache
+from src.backend.exchange_stream_api.cache.connection_cache import ConnectionCache
+from src.backend.exchange_stream_api.cache.market_cache import MarketCache
+from src.backend.exchange_stream_api.cache.status_cache import StatusCache
 
 class ExchangeStream(Thread):
 

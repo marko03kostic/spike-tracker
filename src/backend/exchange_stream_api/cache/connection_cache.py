@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.backend.exchange_stream.definitions import BetfairConnectionMessage
+from src.backend.exchange_stream_api.definitions import BetfairConnectionMessage
 
 @dataclass
 class ConnectionCache:
