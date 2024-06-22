@@ -36,8 +36,6 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.toolbar)
         layout.addWidget(self.tab_widget)
 
-        self.showMaximized()
-
     @Slot()
     def add_market_dialog_slot(self) -> None:
         self.add_market_dialog = AddMarketDialog()
