@@ -5,23 +5,13 @@ if TYPE_CHECKING:
     from src.backend.betting_api.client import BettingAPIClient
 
 class MainApplication(QApplication):
-    _instance = None
-
+    
     def __init__(self, argv) -> None:
-        if MainApplication._instance:
-            raise RuntimeError("MainApplication is a singleton class and has already been initialized.")
         super().__init__(argv)
-        MainApplication._instance = self
         self._betting_api_client: Optional[BettingAPIClient] = None
         self._ssoid: Optional[str] = None
         self._app_key: Optional[str] = None
 
-    @staticmethod
-    def instance() -> 'MainApplication':
-        if not MainApplication._instance:
-            raise RuntimeError("MainApplication instance not initialized yet")
-        return MainApplication._instance
-    
     @property
     def ssoid(self) -> Optional[str]:
         return self._ssoid

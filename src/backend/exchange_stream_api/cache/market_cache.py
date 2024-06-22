@@ -30,7 +30,10 @@ class MarketCache:
 
         if self.market_heartbeat_interval:
             self.market_heartbeat_timer = Timer(self.market_heartbeat_interval, self.handle_missing_heartbeat)
-            self.market_heartbeat_timer.start()
+            try:
+                self.market_heartbeat_timer.start()
+            except RuntimeError:
+                pass
 
         initial_clk = message.get('initialClk')
         clk = message.get('clk')

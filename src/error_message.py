@@ -6,4 +6,4 @@ def show_error_message(message: str) -> None:
     msg.setText("Error")
     msg.setInformativeText(message)
     msg.setWindowTitle("Error")
-    msg.exec_()
+    msg.show()
