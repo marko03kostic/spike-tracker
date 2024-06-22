@@ -43,7 +43,7 @@ class AddMarketDialog(QDialog):
             if self.set_valid_market_catalogue():
                 self.accept()
             else:
-                show_error_message('Unexpected error occured')
+                show_error_message('An unexpected error occurred')
 
     def is_input_valid(self) -> bool:
         input = self.input_field.text()

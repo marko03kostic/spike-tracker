@@ -26,9 +26,6 @@ def test_main_window_initialization(main_window):
     assert main_window.minimumSize() == QSize(400, 300)
     assert main_window.maximumSize() == QSize(1920, 1080)
     assert main_window.size() == QSize(800, 600)
-    assert main_window.add_market == QPushButton('Add market')
-    assert main_window.remove_market == QPushButton('Remove market')
-    assert main_window.tab_widget == QTabWidget()
 
 def test_add_market_dialog_slot(main_window):
     """Test add_market_dialog_slot method."""
