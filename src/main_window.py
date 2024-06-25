@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QDialog, QMainWindow, QToolBar, QTabWidget, QVBoxLayout, QWidget, QPushButton
 from PySide6.QtCore import Slot
 from src.market_tab.market_tab import MarketTab
+from src.backend.exchange_stream_api.stream import ExchangeStream
 from src.add_market_dialog.add_market_by_id_dialog.dialog import AddMarketDialog
 
 class MainWindow(QMainWindow):
@@ -12,9 +13,9 @@ class MainWindow(QMainWindow):
 
     def init_gui(self) -> None:
         self.setWindowTitle("SpikeTracker")
-        self.setMinimumSize(400, 300)
+        self.setMinimumSize(900, 500)
         self.setMaximumSize(1920, 1080)
-        self.resize(800, 600)
+        self.resize(900, 500)
         
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -49,7 +50,13 @@ class MainWindow(QMainWindow):
         market_name = self.add_market_dialog.market_catalogue.get('marketName', None)
         tab_title = f'{event_name} \n {market_name}'
 
-        market_tab = MarketTab(self.add_market_dialog.market_catalogue)
+        exchange_stream = ExchangeStream()
+        exchange_stream.start()
+        exchange_stream.send_authentication_message()
+        exchange_stream.send_market_subscription_message(market_ids=[self.add_market_dialog.market_catalogue.get('marketId')])
+        
+
+        market_tab = MarketTab(self.add_market_dialog.market_catalogue, exchange_stream)
         self.tab_widget.addTab(market_tab, tab_title)
 
     @Slot()

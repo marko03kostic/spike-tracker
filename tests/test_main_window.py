@@ -7,6 +7,7 @@ from unittest.mock import patch, Mock
 import pytest
 
 from src.backend.betting_api.definitions import MarketCatalogue
+from src.backend.exchange_stream_api.stream import ExchangeStream
 from src.main_window import MainWindow
 
 @pytest.fixture
@@ -23,9 +24,9 @@ def test_main_window_initialization(main_window):
     """Test MainWindow initialization."""
 
     assert main_window.windowTitle() == "SpikeTracker"
-    assert main_window.minimumSize() == QSize(400, 300)
+    assert main_window.minimumSize() == QSize(900, 500)
     assert main_window.maximumSize() == QSize(1920, 1080)
-    assert main_window.size() == QSize(800, 600)
+    assert main_window.size() == QSize(900, 500)
 
 def test_add_market_dialog_slot(main_window):
     """Test add_market_dialog_slot method."""
@@ -46,9 +47,10 @@ def test_reset_add_market_dialog(main_window):
 
 
 class MockMarketTab(QWidget):
-    def __init__(self, market_catalogue: MarketCatalogue, parent=None) -> None:
+    def __init__(self, market_catalogue: MarketCatalogue, exchange_stream: ExchangeStream, parent=None) -> None:
         super().__init__(parent)
-        self.market_catalogue: MarketCatalogue = market_catalogue   
+        self.market_catalogue: MarketCatalogue = market_catalogue
+        self.exchange_stream: ExchangeStream = exchange_stream
 
 @patch('src.main_window.MarketTab', MockMarketTab)
 def test_add_market_dialog_accepted(main_window):

@@ -8,19 +8,16 @@ from src.market_tab.selection_widget.selection_widget import SelectionWidget
 
 class MarketTab(QWidget):
 
-    def __init__(self, market_catalogue: MarketCatalogue, parent=None) -> None:
+    def __init__(self, market_catalogue: MarketCatalogue, exchange_stream: ExchangeStream, parent=None) -> None:
         super().__init__(parent)
         self.market_catalogue: MarketCatalogue = market_catalogue
+        self.exchange_stream: ExchangeStream = exchange_stream
         self.selections = {}
-        self.exchange_stream: ExchangeStream = ExchangeStream()
-        self.exchange_stream.start()
-        self.exchange_stream.send_authentication_message()
-        self.exchange_stream.send_market_subscription_message(market_ids=[self.market_catalogue.get('marketId')])
         self.init_selections()
         self.init_gui()
 
     def init_gui(self):
-        self.info_widget = InfoWidget(self._market_catalogue)
+        self.info_widget = InfoWidget(self.market_catalogue)
 
         left_layout = QVBoxLayout()
         for selection in self.selections.values():

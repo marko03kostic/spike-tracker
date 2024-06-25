@@ -10,7 +10,7 @@ if __name__=='__main__':
     app = MainApplication(sys.argv)
     app.betting_api_client = BettingAPIClient()
     
-    app.ssoid = '2u+6HBu7gp4vse4DclmxqufZcZu6W1OzMnrbNjUKOLE='
+    app.ssoid = 'ZSv2DJn5y4/D49TuIglxAkExVAEXOH8Mfeu06iPqj5c='
     app.app_key = 'UyNmNpCtpFF8RELo'
 
     main_window = MainWindow()
