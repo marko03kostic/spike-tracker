@@ -51,11 +51,12 @@ class RunnerChart(QWidget):
         self.plot_widget.setLimits(xMin=min(x_values), xMax=max(x_values), yMin=1.00, yMax=max(self.values)*1.2)
         self.plot_widget.getViewBox().setMouseEnabled(x=False, y=True)
         self.plot_widget.getViewBox().setLimits(xMin=min(x_values), xMax=max(x_values), yMin=1.00, yMax=max(self.values)*1.2)
-        self.volume_axis.setMouseEnabled(x=False, y=True)
+        self.volume_axis.setMouseEnabled(x=False, y=False)
         
         # Set the y-axis range for the volume axis to start from 0
-        self.volume_axis.setYRange(1, max(self.volumes) * 1.5, padding=0)
+        self.volume_axis.setYRange(0, max(self.volumes) * 1.1, padding=0)
 
+        # Remove index labels and name
         self.plot_widget.getAxis('bottom').setTicks([])
 
         # Automatically assign ticks on the left axis
@@ -66,6 +67,34 @@ class RunnerChart(QWidget):
         self.plot_widget.getViewBox().autoRange()
 
         layout.addWidget(self.plot_widget)  # Add plot widget to the layout
-
+        
     def update_views(self):
         self.volume_axis.setGeometry(self.plot_widget.getViewBox().sceneBoundingRect())
+        self.volume_axis.linkedViewChanged(self.plot_widget.getViewBox(), self.volume_axis.XAxis)
+        
+    def add_point(self, value, volume):
+        # Add the new data point
+        self.values.append(value)
+        self.volumes.append(volume)
+
+        # Update x-values
+        x_values = np.arange(len(self.values))
+
+        # Update the line plot for values
+        self.plot_widget.getPlotItem().clear()
+        self.plot_widget.plot(x_values, self.values, pen=pg.mkPen(color='b', width=2), name="")
+
+        # Update the bar graph for volumes
+        self.volume_bar_graph_item.setOpts(x=x_values, height=self.volumes, width=0.8)
+
+        # Adjust y-axis limits for values
+        self.plot_widget.setYRange(min(self.values), max(self.values) * 1.2)
+
+        # Adjust y-axis limits for volumes
+        self.volume_axis.setYRange(1, max(self.volumes) * 1.5, padding=0)
+
+        # Re-enable auto range after adding the new point
+        self.plot_widget.getViewBox().autoRange()
+
+        # Ensure the views are updated
+        self.update_views()

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QSpacerItem, QSizePolicy, QScrollArea
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QSpacerItem, QSizePolicy, QScrollArea, QPushButton
 from typing import Optional
 
 from src.market_tab.info_widget import InfoWidget
@@ -32,7 +32,7 @@ class MarketTab(QWidget):
         right_layout = QVBoxLayout()
         right_layout.addWidget(self.info_widget)
         
-        self.bottom_widget = QLineEdit("Bottom Widget")
+        self.bottom_widget = QPushButton('kurac na biciklu')
         right_layout.addWidget(self.bottom_widget)
         
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
