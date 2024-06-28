@@ -26,7 +26,8 @@ class ExchangeStream(Thread):
         self.init_cache()
         self.main_app: MainApplication = MainApplication.instance()
         self._stop_event = Event()
-        self._running = True
+        self.subscriptions = []
+        self._running = False  # Track if the thread is actively running
         self.HOST = 'stream-api.betfair.com'
         self.PORT = 443
         self.sock = None
@@ -53,6 +54,7 @@ class ExchangeStream(Thread):
         self.sock = context.wrap_socket(self.sock, server_hostname=self.HOST)
 
     def run(self) -> None:
+        self._running = True
         self.connect()
         try:
             recv_buffer = ""
@@ -86,8 +88,25 @@ class ExchangeStream(Thread):
             except socket.error as e:
                 print(f"Failed to send data: {e}")
 
+    def start(self):
+        if not self._running:
+            super().start()
+            self.send_authentication_message()
+
     def stop(self) -> None:
         self._stop_event.set()
+        self._running = False
+
+    def add_market(self, market_id: str) -> None:
+        if not self._running:
+            self.start()
+        self.subscriptions.append(market_id)
+        self.send_market_subscription_message(market_ids=self.subscriptions)
+
+    def remove_market(self, market_id: str) -> None:
+        self.subscriptions.remove(market_id)
+        if self.subscriptions:
+            self.send_market_subscription_message(market_ids=self.subscriptions)
 
     def send_market_subscription_message(self,
                                          id: str = None,
@@ -141,3 +160,6 @@ class ExchangeStream(Thread):
                                                 appKey=self.main_app.app_key,
                                                 session=self.main_app.ssoid)
         self.send(data=message)
+        
+    def __del__(self):
+        self.stop()

@@ -1,13 +1,14 @@
 from PySide6.QtWidgets import QDialog, QMainWindow, QToolBar, QTabWidget, QVBoxLayout, QWidget, QPushButton
 from PySide6.QtCore import Slot
 from src.market_tab.market_tab import MarketTab
-from src.backend.exchange_stream_api.stream import ExchangeStream
+from src.main_application import MainApplication
 from src.add_market_dialog.add_market_by_id_dialog.dialog import AddMarketDialog
 
 class MainWindow(QMainWindow):
 
     def __init__(self) -> None:
         super().__init__()
+        self._main_app: MainApplication = MainApplication.instance()
         self.add_market_dialog = None
         self.init_gui()
 
@@ -46,17 +47,14 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def add_market_dialog_accepted_slot(self) -> None:
+        market_id = self.add_market_dialog.market_catalogue.get('marketId')
+        self._main_app.exchange_stream.add_market(market_id)
+        
         event_name = self.add_market_dialog.market_catalogue.get('event', {}).get('name', None)
         market_name = self.add_market_dialog.market_catalogue.get('marketName', None)
         tab_title = f'{event_name} \n {market_name}'
 
-        exchange_stream = ExchangeStream()
-        exchange_stream.start()
-        exchange_stream.send_authentication_message()
-        exchange_stream.send_market_subscription_message(market_ids=[self.add_market_dialog.market_catalogue.get('marketId')])
-        
-
-        market_tab = MarketTab(self.add_market_dialog.market_catalogue, exchange_stream)
+        market_tab = MarketTab(self.add_market_dialog.market_catalogue)
         self.tab_widget.addTab(market_tab, tab_title)
 
     @Slot()
@@ -64,6 +62,8 @@ class MainWindow(QMainWindow):
         current_index = self.tab_widget.currentIndex()
         if current_index != -1:
             widget = self.tab_widget.widget(current_index)
+            market_id = widget.market_catalogue.get('marketId')
+            self._main_app.exchange_stream.remove_market(market_id)
             self.tab_widget.removeTab(current_index)
             widget.deleteLater()
 

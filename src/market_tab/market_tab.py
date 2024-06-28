@@ -8,10 +8,9 @@ from src.market_tab.selection_widget.selection_widget import SelectionWidget
 
 class MarketTab(QWidget):
 
-    def __init__(self, market_catalogue: MarketCatalogue, exchange_stream: ExchangeStream, parent=None) -> None:
+    def __init__(self, market_catalogue: MarketCatalogue, parent=None) -> None:
         super().__init__(parent)
         self.market_catalogue: MarketCatalogue = market_catalogue
-        self.exchange_stream: ExchangeStream = exchange_stream
         self.selections = {}
         self.init_selections()
         self.init_gui()
@@ -55,20 +54,9 @@ class MarketTab(QWidget):
             self.selections[selection_id] = SelectionWidget(market_id, selection_id, handicap, runner_name, parent=self)
 
     @property
-    def exchange_stream(self) -> Optional[ExchangeStream]:
-        return self._exchange_stream
-
-    @exchange_stream.setter
-    def exchange_stream(self, value: Optional[ExchangeStream]) -> None:
-        self._exchange_stream = value
-
-    @property
     def market_catalogue(self) -> Optional[MarketCatalogue]:
         return self._market_catalogue
 
     @market_catalogue.setter
     def market_catalogue(self, value: Optional[MarketCatalogue]) -> None:
         self._market_catalogue = value
-
-    def __del__(self):
-        self._exchange_stream.stop()
