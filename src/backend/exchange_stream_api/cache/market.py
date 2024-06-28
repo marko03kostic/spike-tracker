@@ -1,14 +1,24 @@
-from typing import List, Union
+from typing import List, Union, Dict
 from dataclasses import dataclass, field
+from PySide6.QtCore import QObject, Signal
 
-from src.backend.exchange_stream_api.definitions import BetfairRunnerChange
+from src.backend.exchange_stream_api.definitions import BetfairRunnerChange, BetfairMarketDefinition
 
-@dataclass
-class Market:
-    market_id: str
-    full_price_ladder: dict = field(default_factory=dict)
-    level_based_ladder: dict = field(default_factory=dict)
-    single_values: dict = field(default_factory=dict)
+class Market(QObject):
+    full_price_ladder_updated = Signal(str)
+    level_based_ladder_updated = Signal(dict)
+    single_values_updated = Signal(dict)
+    total_volume_updated = Signal(int)
+    market_definition_updated = Signal(BetfairMarketDefinition)
+
+    def __init__(self, market_id: str):
+        super().__init__()
+        self.market_id = market_id
+        self.full_price_ladder: Dict[int, Dict[str, Dict[float, float]]] = {}
+        self.level_based_ladder: Dict[int, Dict[str, List[List[Union[float, int]]]]] = {}
+        self.single_values: Dict[int, Dict[str, Union[int, float]]] = {}
+        self.total_volume: int = 0
+        self.market_definition: BetfairMarketDefinition = BetfairMarketDefinition()
 
     def update(self, runner_changes: List[BetfairRunnerChange]) -> None:
         for runner_change in runner_changes:
@@ -47,6 +57,8 @@ class Market:
             self.update_full_price_ladder(trd, 'trd', runner_id)
             self.update_full_price_ladder(spb, 'spb', runner_id)
             self.update_full_price_ladder(spl, 'spl', runner_id)
+            
+            self.full_price_ladder_updated.emit(str(self.full_price_ladder))
 
     def update_full_price_ladder(self, updates: List[List[float]], selection_name: str, runner_id: int) -> None:
         if updates:
@@ -58,7 +70,7 @@ class Market:
                     self.full_price_ladder.setdefault(runner_id, {}).setdefault(selection_name, {})[price] = size
                 else:
                     self.full_price_ladder.setdefault(runner_id, {}).setdefault(selection_name, {}).pop(price, None)
-
+            
     def update_level_based_ladder(self, updates: List[List[Union[float, int]]], selection_name: str, runner_id: int) -> None:
         ladder_dict = {}
         for i in range(10):
@@ -69,7 +81,19 @@ class Market:
             position, back_price, lay_price = update
             ladder_dict[position] = update
         self.level_based_ladder.setdefault(runner_id, {})[selection_name] = sorted(list(ladder_dict.values()), key=lambda x: x[0])
-
+        self.level_based_ladder_updated.emit(self.level_based_ladder)
+        
     def update_single_values(self, update: Union[int, float], name: str, runner_id: int) -> None:
         if update:
             self.single_values.setdefault(runner_id, {})[name] = update
+            self.single_values_updated.emit(self.single_values)
+            
+    def update_total_volume(self, total_volume: float) -> None:
+        if total_volume:
+            self.total_volume = total_volume
+            self.total_volume_updated.emit(self.total_volume)
+
+    def update_market_definition(self, market_definition: BetfairMarketDefinition) -> None:
+        if market_definition:
+            self.market_definition = market_definition
+            self.market_definition_updated.emit(self.market_definition)

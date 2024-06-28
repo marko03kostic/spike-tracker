@@ -8,7 +8,7 @@ from src.backend.exchange_stream_api.stream import ExchangeStream
 
 if __name__=='__main__':
 
-    app = MainApplication(sys.argv)    
+    app = MainApplication(sys.argv)
     
     app.ssoid = 'SD4M3RXML4T/4aekVPsqeh9wmz2qJyfBKNNDxg25Wns='
     app.app_key = 'UyNmNpCtpFF8RELo'

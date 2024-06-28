@@ -101,7 +101,10 @@ class ExchangeStream(Thread):
         if not self._running:
             self.start()
         self.subscriptions.append(market_id)
-        self.send_market_subscription_message(market_ids=self.subscriptions)
+        self.send_market_subscription_message(market_ids=self.subscriptions,
+                                              fields=[Field.EX_ALL_OFFERS.value,
+                                                      Field.EX_TRADED_VOL.value,
+                                                      Field.EX_TRADED.value])
 
     def remove_market(self, market_id: str) -> None:
         self.subscriptions.remove(market_id)
